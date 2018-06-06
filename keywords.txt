@@ -1,0 +1,59 @@
+#######################################
+# Syntax Coloring Map For L298 library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+L298	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+update	KEYWORD2
+brake	KEYWORD2
+coast	KEYWORD2
+setSpeed	KEYWORD2
+setDirection	KEYWORD2
+isRunning	KEYWORD2
+getDirection	KEYWORD2
+isAccelerating	KEYWORD2
+isBraking	KEYWORD2
+isRunning	KEYWORD2
+isCoasting	KEYWORD2
+getSpeed	KEYWORD2
+setLimitPins	KEYWORD2
+checkLimits	KEYWORD2
+checkCollision	KEYWORD2
+getPosition	KEYWORD2
+setCurrent	KEYWORD2
+getCurrent	KEYWORD2
+isBrakeOn	KEYWORD2
+setAccelerationTime	KEYWORD2
+
+#######################################
+# Instances (KEYWORD2)
+#######################################
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+CCW	LITERAL1
+CW	LITERAL1
+FORWARD	LITERAL1
+BACKWARDS	LITERAL1
+UP	LITERAL1
+DOWN	LITERAL1
+LEFT	LITERAL1
+RIGHT	LITERAL1
+ON	LITERAL1
+OFF	LITERAL1
+DIGITAL_LIMITS	LITERAL1
+ANALOG_LIMITS	LITERAL1
+ANALOG_DIGITAL_LIMITS	LITERAL1
+NO_PULLUP	LITERAL1
+EXTERNAL_PULLUP	LITERAL1
+INTERNAL_PULLUP	LITERAL1
