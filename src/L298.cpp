@@ -29,11 +29,14 @@ void L298::begin(unsigned char enable, unsigned char inputA, unsigned char input
 	// _currentSpeed = 0;
 	// analogWrite(_enable, _currentSpeed);
  	// _status = 0;
-	// setDirection(CW);
 	// setSpeed(0);
 	coast();
- 	digitalWrite(_inputA, false);
-	digitalWrite(_inputB, false);
+	setDirection(CW);
+#ifdef CURRENT_FUNCTIONS
+	setCurrent(2.0);
+#endif
+ 	//digitalWrite(_inputA, false);
+	//digitalWrite(_inputB, false);
 }
 
 
@@ -197,10 +200,10 @@ void L298::update() {	// this function should run on the main loop
 	_currentAmps = _voltageRead / 1023. * _currentSpeed / 255.* _ampsMax; // do not confuse _currentSpeed which is the PWM value applied on enable pin, with amperage (current)
 
 	if (_currentAmps >= _setAmps) {
-		setStatusFlag(CURRENT_MAX);
+		setStatusFlag(OVERCURRENT);
 	}
 	else {
-		unsetStatusFlag(CURRENT_MAX);
+		unsetStatusFlag(OVERCURRENT);
 	}
 #endif
 
@@ -352,6 +355,7 @@ void L298::setCurrent(double amperes) {
 	}
 }
 
-bool checkCurrent() {
-	getStatusFlag(CURRENT_MAX);
+bool L298::checkCurrent() {
+	return getStatusFlag(OVERCURRENT);
+}
 #endif

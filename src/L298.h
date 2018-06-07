@@ -100,7 +100,7 @@
 
 //MSB
 #define LIMIT_CCW 0x100
-#define CURRENT_MAX	0x200
+#define OVERCURRENT	0x200
 #define AUTO_ON 0x400
 
 
@@ -113,16 +113,13 @@ class L298
 		
 		void brake(bool state);
 		bool isBrakeOn();
-
 		
 		void coast();
 		bool isCoasting();
 
-		
 		void setSpeed(unsigned char speed);	
 		unsigned char getSpeed();
 		bool isRunning();
-
 		
 		void setDirection(bool direction);
 		bool getDirection();
