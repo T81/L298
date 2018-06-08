@@ -25,13 +25,14 @@ isRunning	KEYWORD2
 isCoasting	KEYWORD2
 getSpeed	KEYWORD2
 setLimitPins	KEYWORD2
-checkLimits	KEYWORD2
 checkCollision	KEYWORD2
 getPosition	KEYWORD2
 setCurrent	KEYWORD2
 getCurrent	KEYWORD2
 isBrakeOn	KEYWORD2
 setAccelerationTime	KEYWORD2
+configLimits	KEYWORD2
+configCurrent	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)

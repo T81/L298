@@ -15,14 +15,6 @@
 
 L298 motor;
 
-void readPinLow(int pin) {
-  pinMode(pin, INPUT);
-}
-
-void readPinHigh(int pin) {
-  pinMode(pin, INPUT_PULLUP);
-}
-
 // constructor
 test(1_0_constructor_should_begin_stopped) {
   Serial.println("");
@@ -245,10 +237,10 @@ test(2_5_direction_flag) {
   assertFalse(motor.getDirection());
 }
 
-//test(2_6_limits_flags) {
-//    motor.checkLimits();
-//    assertTrue(motor.checkCollision(CW));
-//}
+test(7_7_0_limits_flags) {
+    assertFalse(motor.checkCollision(CW));
+    assertFalse(motor.checkCollision(CCW));
+}
 
 
 // motor motion
@@ -336,7 +328,7 @@ test(3_1_acceleration_deceleration) {
   motor.update();
 
   assertFalse(motor.getSpeed());
-  
+
   assertFalse(motor.isAccelerating());
   assertFalse(motor.isBrakeOn());
   assertFalse(motor.isBraking());
@@ -448,19 +440,18 @@ void setup() {
   Serial.println("");
 
   motor.begin(2, 3, 4);
-  motor.setLimitPins(5, 6, true);
+#ifdef LIMITING_FUNCTIONS
+  motor.setLimitPins(5, 6);
+  motor.configLimits(INTERNAL_PULLUP);
+#else
+  Serial.println("LIMITING FUNCTIONS DISABLED");
+#endif
 
-//#ifndef ACCELERATION_FUNCTIONS
-//  Test::exclude("*acceleration*");
-//  Test::exclude("*deceleration*");
-//#endif
-//
-//#ifdef LIMITING_FUNCTIONS
-//  Serial.println("LIMITING FUNCTIONS ENABLED");
-//  motor.setLimitPins(5, 6, true);
-//#else
-//  Serial.println("LIMITING FUNCTIONS DISABLED");
-//#endif
+#ifndef ACCELERATION_FUNCTIONS
+  Test::exclude("*acceleration*");
+  Test::exclude("*deceleration*");
+#endif
+
 
 }
 

@@ -135,7 +135,7 @@ class L298
 #endif
 
 #ifdef CURRENT_FUNCTIONS
-		void currentPin(unsigned char currentPin);
+		void configCurrentSense(unsigned char currentPin, double supplyVoltage, double senseResistor);
 		void setCurrent(double amperes);
 		double getCurrent();
 		bool checkCurrent();
@@ -143,7 +143,7 @@ class L298
 
 #ifdef LIMITING_FUNCTIONS
 		void setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin);
-		void limitsConfig(unsigned char pullup);
+		void configLimits(unsigned char pullup);
 		bool checkCollision(bool limit);
 #endif
 
@@ -165,7 +165,7 @@ class L298
 #ifdef LIMITING_FUNCTIONS
 		bool _pullup;
 		unsigned char _limitCWpin, _limitCCWpin;
-		void _checkLimits();
+		void _checkDigitalLimits();
 #endif
 
 #ifdef POSITION_FUNCTIONS
@@ -183,7 +183,6 @@ class L298
 		unsigned char _currentPin;
 		int _voltageRead;
 		double _ampsMax, _setAmps, _currentAmps;
-		void configCurrent(double supplyVoltageMax, double senseResistor);
 #endif
 
 		inline void setStatusFlag(const unsigned int flag)    {_status |= flag;}
