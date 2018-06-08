@@ -107,9 +107,9 @@ void L298::setDirection(bool direction) {
 	if (_directionRestriction) {
 		if (_direction != direction) {
 			if (_currentSpeed) {
-#ifdef DEBUG
+/* #ifdef DEBUG
 				Serial.println("Motor should be stopped in order to change direction.");
-#endif
+#endif */
 				return;
 			}
 		}
