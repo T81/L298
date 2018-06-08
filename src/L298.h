@@ -52,7 +52,7 @@
 #define CURRENT_FUNCTIONS
 
 // comment out the following line to disable "LIMITING" functions
-#define LIMITING_FUNCTIONS
+#define LIMITS_FUNCTIONS
 
 // comment out the following line to disable "POSITION" functions
 #define POSITION_FUNCTIONS
@@ -121,10 +121,11 @@ class L298
 		unsigned char getSpeed();
 		bool isRunning();
 		
+		void safeDirectionChange(bool directionRestriction); 
 		void setDirection(bool direction);
 		bool getDirection();
 
-#if defined(ACCELERATION_FUNCTIONS) || defined(LIMITING_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
+#if defined(ACCELERATION_FUNCTIONS) || defined(LIMITS_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
 		void update();
 #endif
 
@@ -141,7 +142,7 @@ class L298
 		bool checkCurrent();
 #endif
 
-#ifdef LIMITING_FUNCTIONS
+#ifdef LIMITS_FUNCTIONS
 		void setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin);
 		void configLimits(unsigned char pullup);
 		bool checkCollision(bool limit);
@@ -157,12 +158,12 @@ class L298
 /* Private variables and functions */
 	private:
 		void _setMotionFlags();
-		bool _direction;
+		bool _direction, _directionRestriction;
 		unsigned char _enable, _inputA, _inputB, _currentSpeed, _targetSpeed;
 		unsigned int _status;
 		unsigned long _interval;
 
-#ifdef LIMITING_FUNCTIONS
+#ifdef LIMITS_FUNCTIONS
 		bool _pullup;
 		unsigned char _limitCWpin, _limitCCWpin;
 		void _checkDigitalLimits();

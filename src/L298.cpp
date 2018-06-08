@@ -30,6 +30,7 @@ void L298::begin(unsigned char enable, unsigned char inputA, unsigned char input
 	// analogWrite(_enable, _currentSpeed);
  	// _status = 0;
 	// setSpeed(0);
+	_directionRestriction = true;
 	coast();
 	setDirection(CW);
 #ifdef CURRENT_FUNCTIONS
@@ -98,7 +99,22 @@ unsigned char L298::getSpeed() {
 }
 
 
+void L298::safeDirectionChange(bool directionRestriction) {
+		_directionRestriction = directionRestriction;
+}
+
 void L298::setDirection(bool direction) {
+	if (_directionRestriction) {
+		if (_direction != direction) {
+			if (_currentSpeed) {
+#ifdef DEBUG
+				Serial.println("Motor should be stopped in order to change direction.");
+#endif
+				return;
+			}
+		}
+	
+	}
 	_direction = direction;
 	if (_direction) { // either CCW, FORWARD, UP, RIGHT
 		setStatusFlag(DIRECTION);
@@ -113,10 +129,10 @@ void L298::setDirection(bool direction) {
 }
 
 void L298::setSpeed(unsigned char speed) {
-#ifdef LIMITING_FUNCTIONS
+#ifdef LIMITS_FUNCTIONS
 	if (!getStatusFlag(LIMITS)) {
 #ifdef DEBUG
-	Serial.println("Error @ setSpeed():  Use setLimitPins() first or disable LIMITING_FUNCTIONS");
+	Serial.println("Error @ setSpeed():  Use setLimitPins() first or disable LIMITS_FUNCTIONS");
 #endif
 	return;
 	}
@@ -195,7 +211,7 @@ bool L298::isAccelerating() {
 }
 #endif
 
-#if defined(ACCELERATION_FUNCTIONS) || defined(LIMITING_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
+#if defined(ACCELERATION_FUNCTIONS) || defined(LIMITS_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
 void L298::update() {	// this function should run on the main loop
 #ifdef CURRENT_FUNCTIONS
 	_voltageRead = analogRead(_currentPin);
@@ -209,7 +225,7 @@ void L298::update() {	// this function should run on the main loop
 	}
 #endif
 
-#ifdef LIMITING_FUNCTIONS
+#ifdef LIMITS_FUNCTIONS
 	_checkDigitalLimits();
 #endif
 
@@ -244,7 +260,7 @@ int L298::getPosition() {
 }
 #endif
 
-#ifdef LIMITING_FUNCTIONS
+#ifdef LIMITS_FUNCTIONS
 bool L298::checkCollision(bool limit) {
 	return (limit ? getStatusFlag(LIMIT_CCW) : getStatusFlag(LIMIT_CW));
 }
@@ -311,7 +327,6 @@ void L298::_checkDigitalLimits() {
 			unsetStatusFlag(LIMIT_CCW);
 		}
 	}
-	
 	if (getStatusFlag(LIMIT_CW) && (_direction == CW)) {
 		return;
 	}

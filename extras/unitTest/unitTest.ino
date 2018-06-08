@@ -210,7 +210,25 @@ test(2_4_1_acceleration_flag_on) {
   assertTrue(motor.isBraking());
 }
 
+test(2_5_direction_restriction) {
+  motor.setAccelerationTime(0);
+  motor.setSpeed(0);
+  motor.setDirection(CW);
+  assertFalse(motor.getDirection());
+  motor.setSpeed(127);
+  motor.setDirection(CCW);
+  assertFalse(motor.getDirection());
+
+  motor.safeDirectionChange(OFF);
+  motor.setDirection(CCW);
+  assertTrue(motor.getDirection());
+  motor.safeDirectionChange(ON); 
+}
+
 test(2_5_direction_flag) {
+  motor.setAccelerationTime(0);
+  motor.setSpeed(0);
+
   motor.setDirection(CCW);
   assertTrue(motor.getDirection());
 
@@ -238,8 +256,8 @@ test(2_5_direction_flag) {
 }
 
 test(7_7_0_limits_flags) {
-    assertFalse(motor.checkCollision(CW));
-    assertFalse(motor.checkCollision(CCW));
+  assertFalse(motor.checkCollision(CW));
+  assertFalse(motor.checkCollision(CCW));
 }
 
 
@@ -440,7 +458,7 @@ void setup() {
   Serial.println("");
 
   motor.begin(2, 3, 4);
-#ifdef LIMITING_FUNCTIONS
+#ifdef LIMITS_FUNCTIONS
   motor.setLimitPins(5, 6);
   motor.configLimits(INTERNAL_PULLUP);
 #else

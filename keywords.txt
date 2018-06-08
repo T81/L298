@@ -33,6 +33,7 @@ isBrakeOn	KEYWORD2
 setAccelerationTime	KEYWORD2
 configLimits	KEYWORD2
 configCurrent	KEYWORD2
+safeDirectionChange	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
