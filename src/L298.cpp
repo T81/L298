@@ -33,8 +33,8 @@ void L298::begin(unsigned char enable, unsigned char inputA, unsigned char input
 	_directionRestriction = true;
 	coast();
 	setDirection(CW);
-#ifdef POSITION_FUNCTIONS
-	setPositionLimits(0, 1023);
+#ifdef ANALOG_FUNCTIONS
+	//setPositionLimits(0, 1023);
 #endif	
 #ifdef CURRENT_FUNCTIONS
 	setCurrent(2.0);
@@ -140,10 +140,10 @@ void L298::setDirection(bool direction) {
 
 
 void L298::setSpeed(unsigned char speed) {
-#ifdef LIMITS_FUNCTIONS
+#ifdef DIGITAL_FUNCTIONS
 	if (!getStatusFlag(DIGITAL_LIMIT)) {
 #ifdef DEBUG
-	Serial.println("Error @ setSpeed():  Use setLimitPins() first or disable LIMITS_FUNCTIONS");
+	Serial.println("Error @ setSpeed():  Use setLimitPins() first or disable DIGITAL_FUNCTIONS");
 #endif
 	return;
 	}
@@ -224,20 +224,15 @@ bool L298::isDecelerating() {
 #endif
 
 
-#if defined(ACCELERATION_FUNCTIONS) || defined(LIMITS_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
+#if defined(ACCELERATION_FUNCTIONS) || defined(DIGITAL_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
 void L298::update() {	// this function should run on the main loop
 #ifdef CURRENT_FUNCTIONS
 	_vSense = analogRead(_sensePin);
 	// _currentAmps = _vSense / 1023. * _currentSpeed / 255.* _ampsMax; // do not confuse _currentSpeed which is the PWM value applied on enable pin, with amperage (current)
 	_currentAmps = _vSense / 1023. * _currentSpeed / 255.* _ampsMax; // do not confuse _currentSpeed which is the PWM value applied on enable pin, with amperage (current)
 
-	if (_setAmps) {
-		if (_currentAmps >= _setAmps) {
-			setStatusFlag(OVERCURRENT);
-		}
-		else {
-			unsetStatusFlag(OVERCURRENT);
-		}
+	if (_currentAmps >= _setAmps) {
+		setStatusFlag(OVERCURRENT);
 	}
 	else {
 		unsetStatusFlag(OVERCURRENT);
@@ -247,13 +242,14 @@ void L298::update() {	// this function should run on the main loop
 	}
 #endif
 
-#ifdef LIMITS_FUNCTIONS
+#ifdef DIGITAL_FUNCTIONS
 	_checkDigitalLimits();
-	_checkAnalogLimits();
+	//_checkAnalogLimits();
 #endif
 
-#ifdef POSITION_FUNCTIONS
+#ifdef ANALOG_FUNCTIONS
 	_currentPosition = analogRead(_positionPin);
+	_checkAnalogLimits();
 #endif
 
 #ifdef ACCELERATION_FUNCTIONS
@@ -273,7 +269,7 @@ void L298::update() {	// this function should run on the main loop
 #endif
 
 
-#ifdef POSITION_FUNCTIONS
+#ifdef ANALOG_FUNCTIONS
 void L298::positionPin(unsigned char pin) {
 	_positionPin = pin;
 }
@@ -281,6 +277,7 @@ void L298::positionPin(unsigned char pin) {
 void L298::setPositionLimits(int lowerLimit, int upperLimit) {
 	if ((lowerLimit >= 0) && (lowerLimit < 1023) && (upperLimit > 0) && (upperLimit <= 1023)) {
 		if (lowerLimit < upperLimit) {
+			setStatusFlag(ANALOG_LIMIT);
 			_lowerLimit = lowerLimit;
 			_upperLimit = upperLimit;
 		}
@@ -303,28 +300,37 @@ int L298::getPosition() {
 }
 
 void L298::_checkAnalogLimits() {
-	if (_currentPosition <= _lowerLimit ) {
-		if (_direction == CW) {
-			brake(ON);
+	if (getStatusFlag(ANALOG_LIMIT)) {
+		if (_currentPosition <= _lowerLimit ) {
+			if (_direction == CW) {
+				brake(ON);
+			}
+			setStatusFlag(ANALOG_LIMIT_CW);
 		}
-		setStatusFlag(ANALOG_LIMIT_CW);
+		else {
+			unsetStatusFlag(ANALOG_LIMIT_CW);
+		}
+		if (_currentPosition >= _upperLimit ) {
+			if (_direction == CCW) {
+				brake(ON);
+			}
+			setStatusFlag(ANALOG_LIMIT_CCW);
+		}
+		else {
+			unsetStatusFlag(ANALOG_LIMIT_CCW);
+		}
 	}
 	else {
-		unsetStatusFlag(ANALOG_LIMIT_CW);
+		unsetStatusFlag(ANALOG_LIMIT_CW | ANALOG_LIMIT_CCW);
 	}
-	if (_currentPosition >= _upperLimit ) {
-		if (_direction == CCW) {
-			brake(ON);
-		}
-		setStatusFlag(ANALOG_LIMIT_CCW);
-	}
-	else {
-		unsetStatusFlag(ANALOG_LIMIT_CCW);
-	}
+}
+
+void L298::analogLimits(bool enable) {
+	enable ? setStatusFlag(ANALOG_LIMIT) : unsetStatusFlag(ANALOG_LIMIT); 
 }
 #endif
 
-#ifdef LIMITS_FUNCTIONS
+#ifdef DIGITAL_FUNCTIONS
 bool L298::checkCollision(bool limit) {
 	return (limit ? getStatusFlag(DIGITAL_LIMIT_CCW) : getStatusFlag(DIGITAL_LIMIT_CW));
 }
@@ -336,7 +342,7 @@ void L298::setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin) {
 	}
 }
 
-void L298::configLimits(unsigned char pullup) {
+void L298::configLimitPins(unsigned char pullup) {
 	if (!getStatusFlag(DIGITAL_LIMIT)) {
 		_pullup = pullup;
 		setStatusFlag(DIGITAL_LIMIT);	// set the limits flag
@@ -350,7 +356,7 @@ void L298::configLimits(unsigned char pullup) {
 		}
 		else {
 #ifdef DEBUG
-			Serial.println("configLimits() invalid parameter.");
+			Serial.println("configLimitPins() invalid parameter.");
 			Serial.println("Choose between: NO_PULLUP, EXTERNAL_PULLUP, INTERNAL_PULLUP");
 #endif
 		}

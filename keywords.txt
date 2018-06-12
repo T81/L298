@@ -31,12 +31,13 @@ setCurrent	KEYWORD2
 getCurrent	KEYWORD2
 isBrakeOn	KEYWORD2
 setAccelerationTime	KEYWORD2
-configLimits	KEYWORD2
+configLimitPins	KEYWORD2
 configCurrent	KEYWORD2
 safeDirectionChange	KEYWORD2
 checkOverCurrent	KEYWORD2
 resetCurrent	KEYWORD2
 maxCurrent	KEYWORD2
+
 
 #######################################
 # Instances (KEYWORD2)

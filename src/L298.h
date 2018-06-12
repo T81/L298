@@ -45,7 +45,7 @@
 
 
 /************************************************************************
-  if you do not want the definitions in the sketch then use the following 
+                    Enable or disable advanced functionality 
 *************************************************************************/
 
 // comment out the following line to disable "ACCELERATION" functions
@@ -55,10 +55,10 @@
 #define CURRENT_FUNCTIONS
 
 // comment out the following line to disable "LIMITING" functions
-#define LIMITS_FUNCTIONS
+#define DIGITAL_FUNCTIONS
 
 // comment out the following line to disable "POSITION" functions
-#define POSITION_FUNCTIONS
+#define ANALOG_FUNCTIONS
 
 
 // uncomment the following line to enable "DEBUG" messages
@@ -140,10 +140,14 @@ class L298
 		void setDirection(bool direction);
 		bool getDirection();
 
-#if defined(ACCELERATION_FUNCTIONS) || defined(LIMITS_FUNCTIONS) || defined(CURRENT_FUNCTIONS)
+		
+/* These method is available if any advanced mode is enabled*/
+#if defined(ACCELERATION_FUNCTIONS) || defined(CURRENT_FUNCTIONS) || defined(DIGITAL_FUNCTIONS) || defined(ANALOG_FUNCTIONS)
 		void update();
 #endif
 
+
+/* These methods are available if ACCELERATION functionality is enabled*/
 #ifdef ACCELERATION_FUNCTIONS
 		void setAccelerationTime(unsigned long milliSeconds);
 		bool isAccelerating();
@@ -151,6 +155,8 @@ class L298
 		bool isBraking();
 #endif
 
+
+/* These methods are available if CURRENT functionality is enabled*/
 #ifdef CURRENT_FUNCTIONS
 		void configCurrentSense(unsigned char sensePin, double supplyVoltage, double senseResistor);
 		void setCurrent(double amperes);
@@ -160,17 +166,23 @@ class L298
 		void resetCurrent();
 #endif
 
-#ifdef LIMITS_FUNCTIONS
+
+/* These methods are available if LIMITS functionality is enabled*/
+#ifdef DIGITAL_FUNCTIONS
 		void setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin);
-		void configLimits(unsigned char pullup);
+		void configLimitPins(unsigned char pullup);
 		bool checkCollision(bool limit);
+		void analogLimits(bool enable);
 #endif
 
-#ifdef POSITION_FUNCTIONS
+
+/* These methods are available if POSITION functionality is enabled*/
+#ifdef ANALOG_FUNCTIONS
 		void positionPin(unsigned char pin);
 		void setPositionLimits(int lowerLimit, int upperLimit);
 		int getPosition();
 #endif
+
 
 
 /* Private variables and functions */
@@ -179,31 +191,37 @@ class L298
 		bool _direction, _directionRestriction;
 		unsigned char _enable, _inputA, _inputB, _currentSpeed, _targetSpeed;
 		unsigned int _status;
-		unsigned long _interval;
+		// long _interval;
 
-#ifdef LIMITS_FUNCTIONS
-		bool _pullup;
-		unsigned char _limitCWpin, _limitCCWpin;
-		void _checkDigitalLimits();
-#endif
 
-#ifdef POSITION_FUNCTIONS
-		int _positionPin;
-		int _currentPosition, _lowerLimit, _upperLimit;
-		void _checkAnalogLimits();
-#endif
-
+/* These methods are available if ACCELERATION functionality is enabled*/
 #ifdef ACCELERATION_FUNCTIONS
 		unsigned char _startingSpeed;
 		unsigned long _currentMillis, _previousMillis, _millisTarget;
 		double _rampRate;
 #endif
 
+/* These methods are available if CURRENT functionality is enabled*/
 #ifdef CURRENT_FUNCTIONS
 		unsigned char _sensePin;
 		int _vSense;
 		double _ampsMax, _setAmps, _currentAmps, _maxCurrent;
 #endif
+
+/* These methods are available if LIMITS functionality is enabled*/
+#ifdef DIGITAL_FUNCTIONS
+		bool _pullup;
+		unsigned char _limitCWpin, _limitCCWpin;
+		void _checkDigitalLimits();
+#endif
+
+/* These methods are available if POSITION functionality is enabled*/
+#ifdef ANALOG_FUNCTIONS
+		int _positionPin;
+		int _currentPosition, _lowerLimit, _upperLimit;
+		void _checkAnalogLimits();
+#endif
+
 
 		inline void setStatusFlag(const unsigned int flag)    {_status |= flag;}
 		inline void unsetStatusFlag(const unsigned int flag)  {_status &= ~flag;}
