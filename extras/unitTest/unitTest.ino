@@ -10,22 +10,8 @@
 *************************************************************************/
 
 #include <ArduinoUnit.h> // https://github.com/mmurdoch/arduinounit
-//#include <ArduinoUnitMock.h>
-
-  /******************************************************************
-  Choose the functions you want to use before including the library
-*******************************************************************/
-//#define ACCELERATION_FUNCTIONS
-//#define CURRENT_FUNCTIONS
-//#define LIMITS_FUNCTIONS
-//#define POSITION_FUNCTIONS
-//
-//// uncomment to enable debugging messages
-//#define DEBUG
-/*******************************************************************/
-
-
 #include <L298.h>
+
 
 L298 motor;
 
@@ -496,21 +482,23 @@ void setup() {
   Test::exclude("*deceleration*");
 #endif
 
-#ifdef LIMITS_FUNCTIONS
-  motor.setLimitPins(5, 6);
-  motor.configLimits(INTERNAL_PULLUP);
-  Serial.println("LIMITING FUNCTIONS ENABLED");
-#else
-  Serial.println("LIMITING FUNCTIONS DISABLED");
-#endif
-
 #ifdef CURRENT_FUNCTIONS
   Serial.println("CURRENT FUNCTIONS ENABLED");
 #else
-  Serial.println("LIMITING FUNCTIONS DISABLED");
+  Serial.println("CURRENT FUNCTIONS DISABLED");
 #endif
 
+#ifdef ANALOG_FUNCTIONS
+  Serial.println("ANALOG FUNCTIONS ENABLED");
+#else
+  Serial.println("ANALOG FUNCTIONS DISABLED");
+#endif
 
+#ifdef DIGITAL_FUNCTIONS
+  Serial.println("DIGITAL FUNCTIONS ENABLED");
+#else
+  Serial.println("DIGITAL FUNCTIONS DISABLED");
+#endif
 }
 
 void loop() {

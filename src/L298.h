@@ -127,18 +127,20 @@ class L298
 		void begin(unsigned char enable, unsigned char inputA, unsigned char inputB);
 		
 		void brake(bool state);
+		void brakePressure(unsigned char pressure);
 		bool isBrakeOn();
 		
 		void coast();
 		bool isCoasting();
 
+		void setDirection(bool direction);
+		void safeDirectionChange(bool directionRestriction);
+		bool getDirection();
+		
 		void setSpeed(unsigned char speed);	
 		unsigned char getSpeed();
 		bool isRunning();
 		
-		void safeDirectionChange(bool directionRestriction); 
-		void setDirection(bool direction);
-		bool getDirection();
 
 		
 /* These method is available if any advanced mode is enabled*/
@@ -166,22 +168,25 @@ class L298
 		void resetCurrent();
 #endif
 
+/* These methods are available if ANALOG functionality is enabled*/
+#ifdef ANALOG_FUNCTIONS
+		void positionPin(unsigned char pin);
+		int getPosition();
+		
+		void setPositionLimits(int lowerLimit, int upperLimit);
+		bool checkPositionLimit(bool direction);
+		void analogLimits(bool enable);
+#endif
 
-/* These methods are available if LIMITS functionality is enabled*/
+/* These methods are available if DIGITAL functionality is enabled*/
 #ifdef DIGITAL_FUNCTIONS
 		void setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin);
 		void configLimitPins(unsigned char pullup);
 		bool checkCollision(bool limit);
-		void analogLimits(bool enable);
 #endif
 
 
-/* These methods are available if POSITION functionality is enabled*/
-#ifdef ANALOG_FUNCTIONS
-		void positionPin(unsigned char pin);
-		void setPositionLimits(int lowerLimit, int upperLimit);
-		int getPosition();
-#endif
+
 
 
 
@@ -189,7 +194,7 @@ class L298
 	private:
 		void _setMotionFlags();
 		bool _direction, _directionRestriction;
-		unsigned char _enable, _inputA, _inputB, _currentSpeed, _targetSpeed;
+		unsigned char _enable, _inputA, _inputB, _currentSpeed, _targetSpeed, _brakePressure;
 		unsigned int _status;
 		// long _interval;
 

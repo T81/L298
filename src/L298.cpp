@@ -33,6 +33,7 @@ void L298::begin(unsigned char enable, unsigned char inputA, unsigned char input
 	_directionRestriction = true;
 	coast();
 	setDirection(CW);
+	brakePressure(255);
 #ifdef ANALOG_FUNCTIONS
 	//setPositionLimits(0, 1023);
 #endif	
@@ -44,13 +45,18 @@ void L298::begin(unsigned char enable, unsigned char inputA, unsigned char input
 }
 
 
+void L298::brakePressure(unsigned char pressure) {
+	_brakePressure = pressure;
+}
+
+
 void L298::brake(bool state) {
 	if (state == ON) {
 		if (!getStatusFlag(BRAKE_ON)) {
 			setStatusFlag(BRAKE_ON);
 			digitalWrite(_inputA, true);
 			digitalWrite(_inputB, true);
-			analogWrite(_enable, 255);
+			analogWrite(_enable, _brakePressure);
 			_targetSpeed = 0;
 			_currentSpeed = 0;
 			_setMotionFlags();
@@ -244,11 +250,9 @@ void L298::update() {	// this function should run on the main loop
 
 #ifdef DIGITAL_FUNCTIONS
 	_checkDigitalLimits();
-	//_checkAnalogLimits();
 #endif
 
 #ifdef ANALOG_FUNCTIONS
-	_currentPosition = analogRead(_positionPin);
 	_checkAnalogLimits();
 #endif
 
@@ -300,6 +304,8 @@ int L298::getPosition() {
 }
 
 void L298::_checkAnalogLimits() {
+	_currentPosition = analogRead(_positionPin);
+
 	if (getStatusFlag(ANALOG_LIMIT)) {
 		if (_currentPosition <= _lowerLimit ) {
 			if (_direction == CW) {
@@ -325,14 +331,18 @@ void L298::_checkAnalogLimits() {
 	}
 }
 
+bool L298::checkPositionLimit(bool direction) {
+	return (direction ? getStatusFlag(ANALOG_LIMIT_CCW) : getStatusFlag(ANALOG_LIMIT_CW));
+}
+
 void L298::analogLimits(bool enable) {
 	enable ? setStatusFlag(ANALOG_LIMIT) : unsetStatusFlag(ANALOG_LIMIT); 
 }
 #endif
 
 #ifdef DIGITAL_FUNCTIONS
-bool L298::checkCollision(bool limit) {
-	return (limit ? getStatusFlag(DIGITAL_LIMIT_CCW) : getStatusFlag(DIGITAL_LIMIT_CW));
+bool L298::checkCollision(bool direction) {
+	return (direction ? getStatusFlag(DIGITAL_LIMIT_CCW) : getStatusFlag(DIGITAL_LIMIT_CW));
 }
 
 void L298::setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin) {
@@ -346,7 +356,7 @@ void L298::configLimitPins(unsigned char pullup) {
 	if (!getStatusFlag(DIGITAL_LIMIT)) {
 		_pullup = pullup;
 		setStatusFlag(DIGITAL_LIMIT);	// set the limits flag
-		if (pullup == NO_PULLUP || _pullup == EXTERNAL_PULLUP) {
+		if ((pullup == NO_PULLUP) || (_pullup == EXTERNAL_PULLUP)) {
 			pinMode(_limitCWpin, INPUT);
 			pinMode(_limitCCWpin, INPUT);
 		}
