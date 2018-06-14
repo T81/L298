@@ -52,13 +52,13 @@
 #define ACCELERATION_FUNCTIONS
 
 // comment out the following line to disable "CURRENT" functions
-#define CURRENT_FUNCTIONS
+//#define CURRENT_FUNCTIONS
 
 // comment out the following line to disable "LIMITING" functions
 #define DIGITAL_FUNCTIONS
 
 // comment out the following line to disable "POSITION" functions
-#define ANALOG_FUNCTIONS
+//#define ANALOG_FUNCTIONS
 
 
 // uncomment the following line to enable "DEBUG" messages
@@ -87,8 +87,8 @@
 
 // limits mode definitions
 #define NO_PULLUP 0x07
-#define EXTERNAL_PULLUP 0x08
-#define INTERNAL_PULLUP 0x09
+#define INTERNAL_PULLUPS 0x08 // Arduino's internal pullups
+#define EXTERNAL_PULLUPS 0x09 // external pullups
 
 
 #define DIGITAL_LIMITS 0x00
@@ -124,10 +124,10 @@ class L298
 	/* Public variables and functions */
 	public:
 		L298();
-		void begin(unsigned char enable, unsigned char inputA, unsigned char inputB);
+		void begin(uint8_t enable, uint8_t inputA, uint8_t inputB);
 		
 		void brake(bool state);
-		void brakePressure(unsigned char pressure);
+		void brakePressure(uint8_t pressure);
 		bool isBrakeOn();
 		
 		void coast();
@@ -137,8 +137,8 @@ class L298
 		void safeDirectionChange(bool directionRestriction);
 		bool getDirection();
 		
-		void setSpeed(unsigned char speed);	
-		unsigned char getSpeed();
+		void setSpeed(uint8_t speed);	
+		uint8_t getSpeed();
 		bool isRunning();
 		
 
@@ -157,20 +157,9 @@ class L298
 		bool isBraking();
 #endif
 
-
-/* These methods are available if CURRENT functionality is enabled*/
-#ifdef CURRENT_FUNCTIONS
-		void configCurrentSense(unsigned char sensePin, double supplyVoltage, double senseResistor);
-		void setCurrent(double amperes);
-		double getCurrent();
-		bool checkOvercurrent();
-		double maxCurrent();
-		void resetCurrent();
-#endif
-
 /* These methods are available if ANALOG functionality is enabled*/
 #ifdef ANALOG_FUNCTIONS
-		void positionPin(unsigned char pin);
+		void positionPin(uint8_t pin);
 		int getPosition();
 		
 		void setPositionLimits(int lowerLimit, int upperLimit);
@@ -178,15 +167,24 @@ class L298
 		void analogLimits(bool enable);
 #endif
 
-/* These methods are available if DIGITAL functionality is enabled*/
-#ifdef DIGITAL_FUNCTIONS
-		void setLimitPins(unsigned char limitCWpin, unsigned char limitCCWpin);
-		void configLimitPins(unsigned char pullup);
-		bool checkCollision(bool limit);
+
+/* These methods are available if CURRENT functionality is enabled*/
+#ifdef CURRENT_FUNCTIONS
+		void configCurrentSense(uint8_t sensePin, double supplyVoltage, double senseResistor);
+		void setCurrent(double amperes);
+		double getCurrent();
+		bool checkOvercurrent();
+		double maxCurrent();
+		void resetCurrent();
 #endif
 
 
-
+/* These methods are available if DIGITAL functionality is enabled*/
+#ifdef DIGITAL_FUNCTIONS
+		void setLimitPins(uint8_t limitCWpin, uint8_t limitCCWpin);
+		void configLimitPins(uint8_t pullups);
+		bool checkCollision(bool limit);
+#endif
 
 
 
@@ -194,29 +192,35 @@ class L298
 	private:
 		void _setMotionFlags();
 		bool _direction, _directionRestriction;
-		unsigned char _enable, _inputA, _inputB, _currentSpeed, _targetSpeed, _brakePressure;
+#ifdef ACCELERATION_FUNCTIONS
+		double _currentSpeed;
+#else
+		uint8_t _currentSpeed;
+#endif
+		uint8_t _enable, _inputA, _inputB, _targetSpeed, _brakePressure;
 		unsigned int _status;
 		// long _interval;
 
 
 /* These methods are available if ACCELERATION functionality is enabled*/
 #ifdef ACCELERATION_FUNCTIONS
-		unsigned char _startingSpeed;
+		uint8_t _startingSpeed;
 		unsigned long _currentMillis, _previousMillis, _millisTarget;
 		double _rampRate;
 #endif
 
 /* These methods are available if CURRENT functionality is enabled*/
 #ifdef CURRENT_FUNCTIONS
-		unsigned char _sensePin;
+		uint8_t _sensePin;
 		int _vSense;
 		double _ampsMax, _setAmps, _currentAmps, _maxCurrent;
+		void _checkCurrent();
 #endif
 
 /* These methods are available if LIMITS functionality is enabled*/
 #ifdef DIGITAL_FUNCTIONS
-		bool _pullup;
-		unsigned char _limitCWpin, _limitCCWpin;
+		uint8_t _pullups;
+		uint8_t _limitCWpin, _limitCCWpin;
 		void _checkDigitalLimits();
 #endif
 
