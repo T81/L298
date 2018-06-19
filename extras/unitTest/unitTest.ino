@@ -265,10 +265,10 @@ test(2_5_2_direction_flag) {
   assertFalse(motor.getDirection());
 }
 
-test(7_7_0_limits_flags) {
-  assertFalse(motor.checkCollision(CW));
-  assertFalse(motor.checkCollision(CCW));
-}
+//test(7_7_0_digital_limits_flags) {
+//  assertFalse(motor.checkCollision(CW));
+//  assertFalse(motor.checkCollision(CCW));
+//}
 
 
 // motor motion
@@ -472,7 +472,7 @@ void setup() {
   while (!Serial);  // Portability for Leonardo/Micro
   Serial.println("");
 
-  motor.begin(2, 3, 4);
+  motor.begin(2, 24, 22);
 
 #ifdef ACCELERATION_FUNCTIONS
   Serial.println("ACCELERATING FUNCTIONS ENABLED");
@@ -495,8 +495,11 @@ void setup() {
 #endif
 
 #ifdef DIGITAL_FUNCTIONS
+  motor.setLimitPins(23, 25);
+  motor.configLimitPins(EXTERNAL_PULLUPS);
   Serial.println("DIGITAL FUNCTIONS ENABLED");
 #else
+  Test::exclude("*digital*");
   Serial.println("DIGITAL FUNCTIONS DISABLED");
 #endif
 }

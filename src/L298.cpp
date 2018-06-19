@@ -112,20 +112,22 @@ void L298::setDirection(bool direction) {
 	if (_direction != direction) {
 		if ((_directionRestriction && !getStatusFlag(RUNNING)) || !_directionRestriction) {
 			_direction = direction;
-			/* if brake occurred from collision, then changing direction will release the brake automagically*/
-			if (getStatusFlag(DIGITAL_LIMIT_CW) && (_direction == CCW)) {
+			/* if brake occurred from analog or digital limits, then changing direction will release the brake automagically*/
+			if ((getStatusFlag(ANALOG_LIMIT_CW) || getStatusFlag(DIGITAL_LIMIT_CW)) && (_direction == CCW)) {
 				brake(OFF);
 			}
-			if (getStatusFlag(DIGITAL_LIMIT_CCW) && ( _direction == CW)) {
+			if ((getStatusFlag(ANALOG_LIMIT_CCW) || getStatusFlag(DIGITAL_LIMIT_CCW)) && ( _direction == CW)) {
 				brake(OFF);
 			}
 			if (_direction) { // either CCW, FORWARD, UP, RIGHT
 				setStatusFlag(DIRECTION);
+				coast();
 				digitalWrite(_inputA, true);
 				digitalWrite(_inputB, false);
 			}
 			else { // either CW, BACKWARDS, DOWN, LEFT
 				unsetStatusFlag(DIRECTION);
+				coast();
 				digitalWrite(_inputA, false);
 				digitalWrite(_inputB, true);
 			}
@@ -350,7 +352,6 @@ void L298::resetCurrent() {
 
 void L298::_checkCurrent() {
 	_vSense = analogRead(_sensePin);
-	// _currentAmps = _vSense / 1023. * _currentSpeed / 255.* _ampsMax; // do not confuse _currentSpeed which is the PWM value applied on enable pin, with amperage (current)
 	_currentAmps = _vSense / 1023. * _currentSpeed / 255.* _ampsMax; // do not confuse _currentSpeed which is the PWM value applied on enable pin, with amperage (current)
 
 	if (_currentAmps >= _setAmps) {

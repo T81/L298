@@ -43,29 +43,7 @@
 #include "WProgram.h"
 #endif
 
-
-/************************************************************************
-                    Enable or disable advanced functionality 
-*************************************************************************/
-
-// comment out the following line to disable "ACCELERATION" functions
-#define ACCELERATION_FUNCTIONS
-
-// comment out the following line to disable "CURRENT" functions
-//#define CURRENT_FUNCTIONS
-
-// comment out the following line to disable "LIMITING" functions
-#define DIGITAL_FUNCTIONS
-
-// comment out the following line to disable "POSITION" functions
-//#define ANALOG_FUNCTIONS
-
-
-// uncomment the following line to enable "DEBUG" messages
-#define DEBUG
-
-/*************************************************************************/
-
+#include "L298_Config.h"
 
 
 // direction definitions
@@ -140,7 +118,6 @@ class L298
 		void setSpeed(uint8_t speed);	
 		uint8_t getSpeed();
 		bool isRunning();
-		
 
 		
 /* These method is available if any advanced mode is enabled*/
@@ -160,9 +137,9 @@ class L298
 /* These methods are available if ANALOG functionality is enabled*/
 #ifdef ANALOG_FUNCTIONS
 		void positionPin(uint8_t pin);
-		int getPosition();
+		int16_t getPosition();
 		
-		void setPositionLimits(int lowerLimit, int upperLimit);
+		void setPositionLimits(int16_t lowerLimit, int16_t upperLimit);
 		bool checkPositionLimit(bool direction);
 		void analogLimits(bool enable);
 #endif
@@ -198,7 +175,7 @@ class L298
 		uint8_t _currentSpeed;
 #endif
 		uint8_t _enable, _inputA, _inputB, _targetSpeed, _brakePressure;
-		unsigned int _status;
+		uint16_t _status;
 		// long _interval;
 
 
@@ -212,7 +189,7 @@ class L298
 /* These methods are available if CURRENT functionality is enabled*/
 #ifdef CURRENT_FUNCTIONS
 		uint8_t _sensePin;
-		int _vSense;
+		int16_t _vSense;
 		double _ampsMax, _setAmps, _currentAmps, _maxCurrent;
 		void _checkCurrent();
 #endif
@@ -226,15 +203,15 @@ class L298
 
 /* These methods are available if POSITION functionality is enabled*/
 #ifdef ANALOG_FUNCTIONS
-		int _positionPin;
-		int _currentPosition, _lowerLimit, _upperLimit;
+		int16_t _positionPin;
+		int16_t _currentPosition, _lowerLimit, _upperLimit;
 		void _checkAnalogLimits();
 #endif
 
 
-		inline void setStatusFlag(const unsigned int flag)    {_status |= flag;}
-		inline void unsetStatusFlag(const unsigned int flag)  {_status &= ~flag;}
-		inline void toggleStatusFlag(const unsigned int flag) {_status ^= flag;}
-		inline bool getStatusFlag(const unsigned int flag)    {return(_status & flag);}
+		inline void setStatusFlag(const uint16_t flag)    {_status |= flag;}
+		inline void unsetStatusFlag(const uint16_t flag)  {_status &= ~flag;}
+		inline void toggleStatusFlag(const uint16_t flag) {_status ^= flag;}
+		inline bool getStatusFlag(const uint16_t flag)    {return(_status & flag);}
 };
 #endif
