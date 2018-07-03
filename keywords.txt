@@ -12,11 +12,15 @@ L298	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+analogLimits	KEYWORD2
+begin	KEYWORD2
 brake	KEYWORD2
+brakePressure	KEYWORD2
 checkCollision	KEYWORD2
 configCurrentSense	KEYWORD2
 configLimitPins	KEYWORD2
 checkOverCurrent	KEYWORD2
+checkPositionLimit	KEYWORD2
 coast	KEYWORD2
 getCurrent	KEYWORD2
 getDirection	KEYWORD2
@@ -24,16 +28,19 @@ getPosition	KEYWORD2
 getSpeed	KEYWORD2
 isAccelerating	KEYWORD2
 isBrakeOn	KEYWORD2
-isBraking	KEYWORD2
+sBraking	KEYWORD2 // not implemented yet
 isCoasting	KEYWORD2
+isDecelerating	KEYWORD2
 isRunning	KEYWORD2
 maxCurrent	KEYWORD2
+positionPin	KEYWORD2
 resetCurrent	KEYWORD2
 safeDirectionChange	KEYWORD2
 setAccelerationTime	KEYWORD2
 setCurrent	KEYWORD2
 setDirection	KEYWORD2
 setLimitPins	KEYWORD2
+setPositionLimits	KEYWORD2
 setSpeed	KEYWORD2
 update	KEYWORD2
 
@@ -58,5 +65,3 @@ OFF	LITERAL1
 ON	LITERAL1
 RIGHT	LITERAL1
 UP	LITERAL1
-
-
