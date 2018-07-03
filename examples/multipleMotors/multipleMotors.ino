@@ -39,7 +39,6 @@ L298 motor[numberOfMotors] = {
 
 void setup() {
   Serial.begin(9600);
-
   for (int thisMotor = 0; thisMotor < numberOfMotors; thisMotor++) {
     motor[thisMotor].begin(enablePin[thisMotor], directionPin[thisMotor][0], directionPin[thisMotor][1]);
     motor[thisMotor].setLimitPins(limitPin[thisMotor][0], limitPin[thisMotor][1]);

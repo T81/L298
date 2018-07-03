@@ -24,7 +24,7 @@
 #define DIGITAL_FUNCTIONS
 
 // comment out the following line to disable "POSITION" functions
-//#define ANALOG_FUNCTIONS
+#define ANALOG_FUNCTIONS
 
 
 // uncomment the following line to enable "DEBUG" messages
