@@ -69,10 +69,6 @@
 #define EXTERNAL_PULLUPS 0x09 // external pullups
 
 
-#define DIGITAL_LIMITS 0x00
-#define ANALOG_LIMITS 0x01
-#define ANALOG_DIGITAL_LIMITS 0x02
-
 // status register definitions
 //LSB
 #define RUNNING 0x01
@@ -83,7 +79,6 @@
 #define COASTING 0x20
 #define BRAKE_ON 0x40
 #define ANALOG_LIMIT 0x80
-
 
 //MSB
 #define ANALOG_LIMIT_CW 0x100
@@ -150,7 +145,7 @@ class L298
 		void configCurrentSense(uint8_t sensePin, double supplyVoltage, double senseResistor);
 		void setCurrent(double amperes);
 		double getCurrent();
-		bool checkOvercurrent();
+		bool checkOverCurrent();
 		double maxCurrent();
 		void resetCurrent();
 #endif

@@ -18,7 +18,7 @@
 #define ACCELERATION_FUNCTIONS
 
 // comment out the following line to disable "CURRENT" functions
-//#define CURRENT_FUNCTIONS
+#define CURRENT_FUNCTIONS
 
 // comment out the following line to disable "LIMITING" functions
 #define DIGITAL_FUNCTIONS

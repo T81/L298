@@ -12,32 +12,30 @@ L298	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-update	KEYWORD2
 brake	KEYWORD2
-coast	KEYWORD2
-setSpeed	KEYWORD2
-setDirection	KEYWORD2
-isRunning	KEYWORD2
-getDirection	KEYWORD2
-isAccelerating	KEYWORD2
-isBraking	KEYWORD2
-isRunning	KEYWORD2
-isCoasting	KEYWORD2
-getSpeed	KEYWORD2
-setLimitPins	KEYWORD2
 checkCollision	KEYWORD2
-getPosition	KEYWORD2
-setCurrent	KEYWORD2
-getCurrent	KEYWORD2
-isBrakeOn	KEYWORD2
-setAccelerationTime	KEYWORD2
+configCurrentSense	KEYWORD2
 configLimitPins	KEYWORD2
-configCurrent	KEYWORD2
-safeDirectionChange	KEYWORD2
 checkOverCurrent	KEYWORD2
-resetCurrent	KEYWORD2
+coast	KEYWORD2
+getCurrent	KEYWORD2
+getDirection	KEYWORD2
+getPosition	KEYWORD2
+getSpeed	KEYWORD2
+isAccelerating	KEYWORD2
+isBrakeOn	KEYWORD2
+isBraking	KEYWORD2
+isCoasting	KEYWORD2
+isRunning	KEYWORD2
 maxCurrent	KEYWORD2
-
+resetCurrent	KEYWORD2
+safeDirectionChange	KEYWORD2
+setAccelerationTime	KEYWORD2
+setCurrent	KEYWORD2
+setDirection	KEYWORD2
+setLimitPins	KEYWORD2
+setSpeed	KEYWORD2
+update	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
@@ -47,19 +45,18 @@ maxCurrent	KEYWORD2
 # Constants (LITERAL1)
 #######################################
 
+BACKWARDS	LITERAL1
 CCW	LITERAL1
 CW	LITERAL1
-FORWARD	LITERAL1
-BACKWARDS	LITERAL1
-UP	LITERAL1
 DOWN	LITERAL1
-LEFT	LITERAL1
-RIGHT	LITERAL1
-ON	LITERAL1
-OFF	LITERAL1
-DIGITAL_LIMITS	LITERAL1
-ANALOG_LIMITS	LITERAL1
-ANALOG_DIGITAL_LIMITS	LITERAL1
-NO_PULLUP	LITERAL1
 EXTERNAL_PULLUP	LITERAL1
+FORWARD	LITERAL1
 INTERNAL_PULLUP	LITERAL1
+LEFT	LITERAL1
+NO_PULLUP	LITERAL1
+OFF	LITERAL1
+ON	LITERAL1
+RIGHT	LITERAL1
+UP	LITERAL1
+
+

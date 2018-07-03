@@ -334,7 +334,7 @@ void L298::setCurrent(double amperes) {
 	}
 }
 
-bool L298::checkOvercurrent() {
+bool L298::checkOverCurrent() {
 	return getStatusFlag(OVERCURRENT);
 }
 
